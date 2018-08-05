@@ -15,7 +15,9 @@
  */
 
 package uk.ac.ebi.eva.commons.mongodb.writers;
+
 import com.mongodb.BasicDBObject;
+import com.mongodb.client.model.IndexOptions;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
@@ -34,18 +36,11 @@ public class VariantSourceMongoWriter extends MongoItemWriter<IVariantSource> {
 
     public static final String UNIQUE_FILE_INDEX_NAME = "unique_file";
 
-    public static final String BACKGROUND_INDEX = "background";
-
-    public static final String UNIQUE_INDEX = "unique";
-
-    public static final String INDEX_NAME = "name";
-
     private MongoOperations mongoOperations;
 
     private String collection;
 
     public VariantSourceMongoWriter(MongoOperations mongoOperations, String collection) {
-        super();
         Assert.notNull(mongoOperations, "A Mongo instance is required");
         Assert.hasText(collection, "A collection name is required");
         setCollection(collection);
@@ -61,8 +56,7 @@ public class VariantSourceMongoWriter extends MongoItemWriter<IVariantSource> {
         mongoOperations.getCollection(collection).createIndex(
                 new BasicDBObject(VariantSourceMongo.STUDYID_FIELD, 1).append(VariantSourceMongo.FILEID_FIELD, 1)
                         .append(VariantSourceMongo.FILENAME_FIELD, 1),
-                new BasicDBObject(BACKGROUND_INDEX, true).append(UNIQUE_INDEX, true)
-                        .append(INDEX_NAME, UNIQUE_FILE_INDEX_NAME));
+                new IndexOptions().background(true).unique(true).name(UNIQUE_FILE_INDEX_NAME));
     }
 
     @Override
