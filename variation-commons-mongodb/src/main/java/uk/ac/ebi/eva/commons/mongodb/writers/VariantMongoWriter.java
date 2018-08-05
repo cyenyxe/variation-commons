@@ -19,6 +19,7 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BulkWriteOperation;
 import com.mongodb.DBObject;
+import com.mongodb.client.model.IndexOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.data.MongoItemWriter;
@@ -79,11 +80,11 @@ public class VariantMongoWriter extends MongoItemWriter<IVariant> {
         mongoOperations.getCollection(collection).createIndex(
                 new BasicDBObject(VariantMongo.CHROMOSOME_FIELD, 1)
                         .append(VariantMongo.START_FIELD, 1).append(VariantMongo.END_FIELD, 1),
-                new BasicDBObject(BACKGROUND_INDEX, true));
+                new IndexOptions().background(true));
 
         mongoOperations.getCollection(collection).createIndex(
                 new BasicDBObject(VariantMongo.IDS_FIELD, 1),
-                new BasicDBObject(BACKGROUND_INDEX, true));
+                new IndexOptions().background(true));
 
         String filesStudyIdField = String.format("%s.%s", VariantMongo.FILES_FIELD,
                                                  VariantSourceEntryMongo.STUDYID_FIELD);
@@ -91,14 +92,14 @@ public class VariantMongoWriter extends MongoItemWriter<IVariant> {
                                                 VariantSourceEntryMongo.FILEID_FIELD);
         mongoOperations.getCollection(collection).createIndex(
                 new BasicDBObject(filesStudyIdField, 1).append(filesFileIdField, 1),
-                new BasicDBObject(BACKGROUND_INDEX, true));
+                new IndexOptions().background(true));
 
         mongoOperations.getCollection(collection).createIndex(
                 new BasicDBObject(ANNOTATION_FIELD + "." + XREFS_FIELD, 1),
-                new BasicDBObject(BACKGROUND_INDEX, true));
+                new IndexOptions().background(true));
         mongoOperations.getCollection(collection).createIndex(
                 new BasicDBObject(ANNOTATION_FIELD + "." + SO_ACCESSION_FIELD, 1),
-                new BasicDBObject(BACKGROUND_INDEX, true));
+                new IndexOptions().background(true));
     }
 
     @Override
