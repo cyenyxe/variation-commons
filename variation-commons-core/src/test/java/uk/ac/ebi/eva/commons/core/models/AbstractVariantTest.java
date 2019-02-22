@@ -135,4 +135,21 @@ public class AbstractVariantTest {
         assertEquals("", variant.getAlternate());
     }
 
+    @Test
+    public void testSymbolicAltInConstructor() {
+        Variant variant1 = new Variant("1", 1, 1, "", "<INS>");
+        assertEquals("", variant1.getReference());
+        assertEquals("<INS>", variant1.getAlternate());
+        assertEquals(VariantType.SEQUENCE_ALTERATION, variant1.getType());
+
+        Variant variant2 = new Variant("1", 1, 1, "TAC", "<DUP:TANDEM>");
+        assertEquals("TAC", variant2.getReference());
+        assertEquals("<DUP:TANDEM>", variant2.getAlternate());
+        assertEquals(VariantType.SEQUENCE_ALTERATION, variant2.getType());
+
+        Variant variant3 = new Variant("1", 1, 1, "T", "<MY_SYMBOLIC_ALLELE>");
+        assertEquals("T", variant3.getReference());
+        assertEquals("<MY_SYMBOLIC_ALLELE>", variant3.getAlternate());
+        assertEquals(VariantType.SEQUENCE_ALTERATION, variant3.getType());
+    }
 }

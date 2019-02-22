@@ -141,6 +141,9 @@ public abstract class AbstractVariant implements IVariant {
     public VariantType getType() {
         if (this.alternate.equals(".")) {
             return VariantType.NO_ALTERNATE;
+        } else if (alternate.matches("<.*>")) {
+            // Symbolic alleles, from <DEL> or <INS> to arbitrary ones
+            return VariantType.SEQUENCE_ALTERATION;
         } else if (reference.length() == alternate.length()) {
             if (getLength() > 1) {
                 return VariantType.MNV;
@@ -149,8 +152,7 @@ public abstract class AbstractVariant implements IVariant {
             }
         } else if (getLength() <= SV_THRESHOLD) {
             /*
-            * 3 possibilities for being an INDEL:
-            * - The value of the ALT field is <DEL> or <INS>
+            * 2 possibilities for being an INDEL:
             * - The REF allele is . but the ALT is not
             * - The REF field length is different than the ALT field length
             */
